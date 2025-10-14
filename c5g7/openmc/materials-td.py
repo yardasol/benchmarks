@@ -1,0 +1,476 @@
+import openmc
+import openmc.mgxs
+import numpy as np
+
+###############################################################################
+#                 Exporting to OpenMC mg_cross_sections.xml File
+###############################################################################
+
+# Instantiate the energy group data
+groups = openmc.mgxs.EnergyGroups(np.array([0.0, 0.13, 0.63, 4.1, 55.6, 9.2e3, 1.36e6, 1.0e7]))
+
+# Number of delayed groups
+# Delayed cross section values 
+# come from Hou et al., "OECD/NEA benchmark for time-dependnet neutron
+# transport calculations without homogeniztaion"
+# DOI: 10.1016/j.nucengdes.2017.02.008
+n_dg = 8
+
+# Table A2 in Hou et. al
+# uo2, mox43, mox70, mox87
+decay_rate = np.array([1.247E-02, 2.829E-02, 4.252E-02, 1.330E-01, 2.925E-01, 6.665E-01, 1.635E+00, 3.555E+00])
+
+# Instantiate the 7-group C5G7 cross section data
+uo2_xsdata = openmc.XSdata('uo2', groups, num_delayed_groups=n_dg)
+uo2_xsdata.order = 0
+uo2_xsdata.set_total(
+    np.array([1.779490E-01, 3.298050E-01, 4.803880E-01, 5.543670E-01,
+              3.118010E-01, 3.951680E-01, 5.644060E-01]))
+uo2_xsdata.set_absorption(
+    np.array([8.02480E-03, 3.71740E-03, 2.67690E-02, 9.62360E-02, 3.00200E-02,
+              1.11260E-01, 2.82780E-01]))
+scatter_matrix = \
+    [[[1.275370E-01, 4.237800E-02, 9.437400E-06, 5.516300E-09, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 3.244560E-01, 1.631400E-03, 3.142700E-09, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 4.509400E-01, 2.679200E-03, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 4.525650E-01, 5.566400E-03, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 1.252500E-04, 2.714010E-01, 1.025500E-02, 1.002100E-08],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 1.296800E-03, 2.658020E-01, 1.680900E-02],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 8.545800E-03, 2.730800E-01]]]
+scatter_matrix = np.array(scatter_matrix)
+scatter_matrix = np.rollaxis(scatter_matrix, 0, 3)
+uo2_xsdata.set_scatter_matrix(scatter_matrix)
+uo2_xsdata.set_fission(
+    np.array([7.212060E-03, 8.193010E-04, 6.453200E-03, 1.856480E-02, 1.780840E-02, 8.303480E-02, 2.160040E-01]))
+uo2_nu_fission = \
+        np.array([2.005998E-02, 2.027303E-03, 1.570599E-02, 4.518301E-02, 4.334208E-02, 2.020901E-01, 5.257105E-01])
+uo2_xsdata.set_nu_fission(uo2_nu_fission)
+uo2_chi = np.array([5.87910E-01, 4.11760E-01, 3.39060E-04, 1.17610E-07, 0.000000E-00, 0.000000E-00, 0.000000E-00])
+uo2_xsdata.set_chi(uo2_chi)
+
+# Delayed and prompt cross sections for uo2 #
+## Table A1 in Hou et al. gives engergy-averaged Beta, but TDRR needs energy-dependent beta.
+uo2_beta = np.array([[2.13333E-04, 2.13333E-04, 2.13333E-04, 2.13333E-04, 2.13333E-04, 2.13333E-04, 2.13333E-04],
+                     [1.04514E-03, 1.04514E-03, 1.04514E-03, 1.04514E-03, 1.04514E-03, 1.04514E-03, 1.04514E-03],
+                     [6.03969E-04, 6.03969E-04, 6.03969E-04, 6.03969E-04, 6.03969E-04, 6.03969E-04, 6.03969E-04],
+                     [1.33963E-03, 1.33963E-03, 1.33963E-03, 1.33963E-03, 1.33963E-03, 1.33963E-03, 1.33963E-03],
+                     [2.29386E-03, 2.29386E-03, 2.29386E-03, 2.29386E-03, 2.29386E-03, 2.29386E-03, 2.29386E-03],
+                     [7.05174E-04, 7.05174E-04, 7.05174E-04, 7.05174E-04, 7.05174E-04, 7.05174E-04, 7.05174E-04],
+                     [6.00381E-04, 6.00381E-04, 6.00381E-04, 6.00381E-04, 6.00381E-04, 6.00381E-04, 6.00381E-04],
+                     [2.07736E-04, 2.07736E-04, 2.07736E-04, 2.07736E-04, 2.07736E-04, 2.07736E-04, 2.07736E-04]])
+# the actual tot is 7.009223E-03
+uo2_beta_tot = 7.00922E-03
+
+## Table A3 in Hou et al. 
+uo2_chi_delayed = np.array([[0.00075, 0.98512, 0.01413, 0.0, 0.0, 0.0, 0.0],
+                            [0.03049, 0.96907, 0.00044, 0.0, 0.0, 0.0, 0.0],
+                            [0.00457, 0.97401, 0.02142, 0.0, 0.0, 0.0, 0.0],
+                            [0.02002, 0.97271, 0.00727, 0.0, 0.0, 0.0, 0.0],
+                            [0.05601, 0.93818, 0.00581, 0.0, 0.0, 0.0, 0.0],
+                            [0.06098, 0.93444, 0.00458, 0.0, 0.0, 0.0, 0.0],
+                            [0.10635, 0.88298, 0.01067, 0.0, 0.0, 0.0, 0.0],
+                            [0.09346, 0.9026 , 0.00394, 0.0, 0.0, 0.0, 0.0]])
+
+
+## Derived from manipulating Eq. B-3 in Hou et a.l
+# uo2_chi_prompt = (uo2_chi - np.sum(uo2_chi_delayed * uo2_beta, 0)) / (1 - uo2_beta_tot)
+uo2_chi_prompt = np.array([5.91741E-01, 4.07977E-01, 2.91169E-04, 1.18440E-07, 0.00000E-00, 0.00000E-00, 0.00000E-00])
+
+## Table A4 in Hou et al.
+uo2_velocities = np.array([2.23466E+09, 5.07347E+08, 3.86595E+07, 5.13931E+06, 1.67734E+06, 7.28603E+05, 2.92902E+05])
+
+uo2_xsdata.set_beta(uo2_beta)
+uo2_xsdata.set_decay_rate(decay_rate)
+uo2_xsdata.set_prompt_nu_fission((1 - uo2_beta_tot) * uo2_nu_fission)
+uo2_xsdata.set_delayed_nu_fission(uo2_beta * uo2_nu_fission)
+uo2_xsdata.set_chi_prompt(uo2_chi_prompt)
+uo2_xsdata.set_chi_delayed(uo2_chi_delayed)
+uo2_xsdata.set_inverse_velocity(1 / uo2_velocities)
+
+
+mox43_xsdata = openmc.XSdata('mox43', groups, num_delayed_groups=n_dg)
+mox43_xsdata.order = 0
+mox43_xsdata.set_total(
+    np.array([1.787310E-01, 3.308490E-01, 4.837720E-01, 5.669220E-01, 4.262270E-01, 6.789970E-01, 6.828520E-01]))
+mox43_xsdata.set_absorption(
+    np.array([8.43390E-03, 3.75770E-03, 2.79700E-02, 1.04210E-01, 1.39940E-01, 4.09180E-01, 4.09350E-01]))
+scatter_matrix = \
+    [[[1.288760E-01, 4.141300E-02, 8.229000E-06, 5.040500E-09, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 3.254520E-01, 1.639500E-03, 1.598200E-09, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 4.531880E-01, 2.614200E-03, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 4.571730E-01, 5.539400E-03, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 1.604600E-04, 2.768140E-01, 9.312700E-03, 9.165600E-09],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 2.005100E-03, 2.529620E-01, 1.485000E-02],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 8.494800E-03, 2.650070E-01]]]
+scatter_matrix = np.array(scatter_matrix)
+scatter_matrix = np.rollaxis(scatter_matrix, 0, 3)
+mox43_xsdata.set_scatter_matrix(scatter_matrix)
+mox43_xsdata.set_fission(
+    np.array([7.62704E-03, 8.76898E-04, 5.69835E-03, 2.28872E-02, 1.07635E-02, 2.32757E-01, 2.48968E-01]))
+
+mox43_nu_fission = \
+        np.array([2.175300E-02, 2.535103E-03, 1.626799E-02, 6.547410E-02, 3.072409E-02, 6.666510E-01, 7.139904E-01])
+mox43_xsdata.set_nu_fission(mox43_nu_fission)
+mox43_chi = np.array([5.87910E-01, 4.11760E-01, 3.39060E-04, 1.17610E-07, 0.000000E-00, 0.000000E-00, 0.000000E-00])
+mox43_xsdata.set_chi(mox43_chi)
+
+# Delayed and prompt cross sections for mox43 #
+## Table A1 in Hou et al. gives engergy-averaged Beta, but TDRR needs energy-dependent beta.
+mox43_beta = np.array([[7.82484E-05, 7.82484E-05, 7.82484E-05, 7.82484E-05, 7.82484E-05, 7.82484E-05, 7.82484E-05],
+                       [6.40534E-04, 6.40534E-04, 6.40534E-04, 6.40534E-04, 6.40534E-04, 6.40534E-04, 6.40534E-04],
+                       [2.27884E-04, 2.27884E-04, 2.27884E-04, 2.27884E-04, 2.27884E-04, 2.27884E-04, 2.27884E-04],
+                       [5.78624E-04, 5.78624E-04, 5.78624E-04, 5.78624E-04, 5.78624E-04, 5.78624E-04, 5.78624E-04],
+                       [9.97539E-04, 9.97539E-04, 9.97539E-04, 9.97539E-04, 9.97539E-04, 9.97539E-04, 9.97539E-04],
+                       [4.33265E-04, 4.33265E-04, 4.33265E-04, 4.33265E-04, 4.33265E-04, 4.33265E-04, 4.33265E-04],
+                       [3.22355E-04, 3.22355E-04, 3.22355E-04, 3.22355E-04, 3.22355E-04, 3.22355E-04, 3.22355E-04],
+                       [1.23882E-04, 1.23882E-04, 1.23882E-04, 1.23882E-04, 1.23882E-04, 1.23882E-04, 1.23882E-04]])
+# The actual tot is 3.4023314E-03
+mox43_beta_tot = 3.40233E-03
+
+## Table A3 in Hou et al.
+mox43_chi_delayed = np.array([[0.00075, 0.98512, 0.01413, 0.0, 0.0, 0.0, 0.0],
+                              [0.03069, 0.96887, 0.00044, 0.0, 0.0, 0.0, 0.0],
+                              [0.00607, 0.97276, 0.02117, 0.0, 0.0, 0.0, 0.0],
+                              [0.01887, 0.97282, 0.00831, 0.0, 0.0, 0.0, 0.0],
+                              [0.0499 , 0.94419, 0.00591, 0.0, 0.0, 0.0, 0.0],
+                              [0.05524, 0.93984, 0.00492, 0.0, 0.0, 0.0, 0.0],
+                              [0.1014 , 0.88508, 0.01351, 0.0, 0.0, 0.0, 0.0],
+                              [0.08055, 0.91408, 0.00537, 0.0, 0.0, 0.0, 0.0]])
+
+## Derived from manipulating Eq. B-3 in Hou et a.l
+# mox43_chi_prompt = (mox43_chi - np.sum(mox43_chi_delayed * mox43_beta, 0)) / (1 - mox43_beta_tot)
+mox43_chi_prompt = np.array([5.89768E-01, 4.09925E-01, 3.16068E-04, 1.18012E-07, 0.00000E-00, 0.00000E-00, 0.00000E-00])
+
+## Table A4 in Hou et al.
+mox43_velocities = np.array([2.23473E+09,5.07114E+08, 3.88385E+07, 5.16295E+06, 1.75719E+06, 7.68973E+05, 2.94764E+05])
+
+mox43_xsdata.set_beta(mox43_beta)
+mox43_xsdata.set_decay_rate(decay_rate)
+mox43_xsdata.set_prompt_nu_fission((1 - mox43_beta_tot) * mox43_nu_fission)
+mox43_xsdata.set_delayed_nu_fission(mox43_beta * mox43_nu_fission)
+mox43_xsdata.set_chi_prompt(mox43_chi_prompt)
+mox43_xsdata.set_chi_delayed(mox43_chi_delayed)
+mox43_xsdata.set_inverse_velocity(1 / mox43_velocities)
+
+
+mox7_xsdata = openmc.XSdata('mox7', groups, num_delayed_groups=n_dg)
+mox7_xsdata.order = 0
+mox7_xsdata.set_total(
+    np.array([1.813230E-01, 3.343680E-01, 4.937850E-01, 5.912160E-01, 4.741980E-01, 8.336010E-01, 8.536030E-01]))
+mox7_xsdata.set_absorption(
+    np.array([9.06570E-03, 4.29670E-03, 3.28810E-02, 1.22030E-01, 1.82980E-01, 5.68460E-01, 5.85210E-01]))
+scatter_matrix = \
+    [[[1.304570E-01, 4.179200E-02, 8.510500E-06, 5.132900E-09, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 3.284280E-01, 1.643600E-03, 2.201700E-09, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 4.583710E-01, 2.533100E-03, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 4.637090E-01, 5.476600E-03, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 1.761900E-04, 2.823130E-01, 8.728900E-03, 9.001600E-09],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 2.276000E-03, 2.497510E-01, 1.311400E-02],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 8.864500E-03, 2.595290E-01]]]
+scatter_matrix = np.array(scatter_matrix)
+scatter_matrix = np.rollaxis(scatter_matrix, 0, 3)
+mox7_xsdata.set_scatter_matrix(scatter_matrix)
+mox7_xsdata.set_fission(
+    np.array([8.25446E-03, 1.32565E-03, 8.42156E-03, 3.28730E-02, 1.59636E-02, 3.23794E-01, 3.62803E-01]))
+mox7_nu_fission = \
+        np.array([2.381395E-02, 3.858689E-03, 2.413400E-02, 9.436622E-02, 4.576988E-02, 9.281814E-01, 1.043200E+00])
+mox7_xsdata.set_nu_fission(mox7_nu_fission)
+mox7_chi = np.array([5.87910E-01, 4.11760E-01, 3.39060E-04, 1.17610E-07, 0.000000E-00, 0.000000E-00, 0.000000E-00])
+mox7_xsdata.set_chi(mox7_chi)
+
+# Delayed and prompt cross sections for mox7 #
+## Table A1 in Hou et al. gives engergy-averaged Beta, but TDRR needs energy-dependent beta.
+mox7_beta = np.array([[7.65120E-05, 7.65120E-05, 7.65120E-05, 7.65120E-05, 7.65120E-05, 7.65120E-05, 7.65120E-05],
+                      [6.34833E-04, 6.34833E-04, 6.34833E-04, 6.34833E-04, 6.34833E-04, 6.34833E-04, 6.34833E-04],
+                      [2.23483E-04, 2.23483E-04, 2.23483E-04, 2.23483E-04, 2.23483E-04, 2.23483E-04, 2.23483E-04],
+                      [5.68882E-04, 5.68882E-04, 5.68882E-04, 5.68882E-04, 5.68882E-04, 5.68882E-04, 5.68882E-04],
+                      [9.81163E-04, 9.81163E-04, 9.81163E-04, 9.81163E-04, 9.81163E-04, 9.81163E-04, 9.81163E-04],
+                      [4.29227E-04, 4.29227E-04, 4.29227E-04, 4.29227E-04, 4.29227E-04, 4.29227E-04, 4.29227E-04],
+                      [3.18971E-04, 3.18971E-04, 3.18971E-04, 3.18971E-04, 3.18971E-04, 3.18971E-04, 3.18971E-04],
+                      [1.21830E-04, 1.21830E-04, 1.21830E-04, 1.21830E-04, 1.21830E-04, 1.21830E-04, 1.21830E-04]])
+# The actual tot is 3.354901E-03 
+mox7_beta_tot = 3.35490E-03 
+
+## Table A3 in Hou et al.
+mox7_chi_delayed = np.array([[0.00075, 0.98512, 0.01413, 0.0, 0.0, 0.0, 0.0],
+                             [0.03069, 0.96887, 0.00044, 0.0, 0.0, 0.0, 0.0],
+                             [0.00612, 0.97272, 0.02116, 0.0, 0.0, 0.0, 0.0],
+                             [0.01883, 0.97283, 0.00834, 0.0, 0.0, 0.0, 0.0],
+                             [0.04968, 0.9444 , 0.00592, 0.0, 0.0, 0.0, 0.0],
+                             [0.05506, 0.94002, 0.00492, 0.0, 0.0, 0.0, 0.0],
+                             [0.10115, 0.88527, 0.01358, 0.0, 0.0, 0.0, 0.0],
+                             [0.08021, 0.91438, 0.00541, 0.0, 0.0, 0.0, 0.0]])
+
+## Derived from manipulating Eq. B-3 in Hou et a.l
+# mox7_chi_prompt = (mox7_chi - np.sum(mox7_chi_delayed * mox7_beta, 0)) / (1 - mox7_beta_tot)
+mox7_chi_prompt = array([5.89742E-01, 4.09950E-01, 3.16377E-04, 1.18006E-07, 0.00000E-00, 0.00000E-00, 0.00000E-00])
+
+## Table A4 in Hou et al.
+mox7_velocities = np.array([2.23479E+09, 5.07355E+08, 3.91436E+07, 5.18647E+06, 1.78072E+06, 7.84470E+05, 3.02310E+05])
+
+mox7_xsdata.set_beta(mox7_beta)
+mox7_xsdata.set_decay_rate(decay_rate)
+mox7_xsdata.set_prompt_nu_fission((1 - mox7_beta_tot) * mox7_nu_fission)
+mox7_xsdata.set_delayed_nu_fission(mox7_beta * mox7_nu_fission)
+mox7_xsdata.set_chi_prompt(mox7_chi_prompt)
+mox7_xsdata.set_chi_delayed(mox7_chi_delayed)
+mox7_xsdata.set_inverse_velocity(1 / mox7_velocities)
+
+
+mox87_xsdata = openmc.XSdata('mox87', groups, num_delayed_groups=n_dg)
+mox87_xsdata.order = 0
+mox87_xsdata.set_total(
+    np.array([1.830450E-01, 3.367050E-01, 5.005070E-01, 6.061740E-01, 5.027540E-01, 9.210280E-01, 9.552310E-01]))
+mox87_xsdata.set_absorption(
+    np.array([9.48620E-03, 4.65560E-03, 3.62400E-02, 1.32720E-01, 2.08400E-01, 6.58700E-01, 6.90170E-01]))
+scatter_matrix = \
+    [[[1.315040E-01, 4.204600E-02, 8.697200E-06, 5.193800E-09, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 3.304030E-01, 1.646300E-03, 2.600600E-09, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 4.617920E-01, 2.474900E-03, 0.000000E-00, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 4.680210E-01, 5.433000E-03, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 1.859700E-04, 2.857710E-01, 8.397300E-03, 8.928000E-09],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 2.391600E-03, 2.476140E-01, 1.232200E-02],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 8.968100E-03, 2.560930E-01]]]
+scatter_matrix = np.array(scatter_matrix)
+scatter_matrix = np.rollaxis(scatter_matrix, 0, 3)
+mox87_xsdata.set_scatter_matrix(scatter_matrix)
+mox87_xsdata.set_fission(
+    np.array([8.67209E-03, 1.62426E-03, 1.02716E-02, 3.90447E-02, 1.92576E-02, 3.74888E-01, 4.30599E-01]))
+mox87_nu_fission = \
+        np.array([2.518600E-02, 4.739509E-03, 2.947805E-02, 1.122500E-01, 5.530301E-02, 1.074999E+00, 1.239298E+00])
+mox87_xsdata.set_nu_fission(mox87_nu_fission)
+mox87_chi = np.array([5.87910E-01, 4.11760E-01, 3.39060E-04, 1.17610E-07, 0.000000E-00, 0.000000E-00, 0.000000E-00])
+mox87_xsdata.set_chi(mox87_chi)
+
+# Delayed and prompt cross sections for mox87 #
+## Table A1 in Hou et al. gives engergy-averaged Beta, but TDRR needs energy-dependent beta.
+mox87_beta = np.array([[7.58799E-05, 7.58799E-05, 7.58799E-05, 7.58799E-05, 7.58799E-05, 7.58799E-05, 7.58799E-05],
+                       [6.33750E-04, 6.33750E-04, 6.33750E-04, 6.33750E-04, 6.33750E-04, 6.33750E-04, 6.33750E-04],
+                       [2.22271E-04, 2.22271E-04, 2.22271E-04, 2.22271E-04, 2.22271E-04, 2.22271E-04, 2.22271E-04],
+                       [5.66810E-04, 5.66810E-04, 5.66810E-04, 5.66810E-04, 5.66810E-04, 5.66810E-04, 5.66810E-04],
+                       [9.77854E-04, 9.77854E-04, 9.77854E-04, 9.77854E-04, 9.77854E-04, 9.77854E-04, 9.77854E-04],
+                       [4.29965E-04, 4.29965E-04, 4.29965E-04, 4.29965E-04, 4.29965E-04, 4.29965E-04, 4.29965E-04],
+                       [3.19265E-04, 3.19265E-04, 3.19265E-04, 3.19265E-04, 3.19265E-04, 3.19265E-04, 3.19265E-04],
+                       [1.21188E-04, 1.21188E-04, 1.21188E-04, 1.21188E-04, 1.21188E-04, 1.21188E-04, 1.21188E-04]])
+# The actual tot is 3.3469829E-03 
+mox87_beta_tot = 3.34698E-03 
+
+## Table A3 in Hou et al.
+mox87_chi_delayed = np.array([[0.00075, 0.98512, 0.01413, 0.0, 0.0, 0.0, 0.0],
+                              [0.03069, 0.96887, 0.00044, 0.0, 0.0, 0.0, 0.0],
+                              [0.00614, 0.9727 , 0.02116, 0.0, 0.0, 0.0, 0.0],
+                              [0.0188 , 0.97284, 0.00836, 0.0, 0.0, 0.0, 0.0],
+                              [0.0496 , 0.94448, 0.00592, 0.0, 0.0, 0.0, 0.0],
+                              [0.05496, 0.94012, 0.00492, 0.0, 0.0, 0.0, 0.0],
+                              [0.10101, 0.8854 , 0.01359, 0.0, 0.0, 0.0, 0.0],
+                              [0.08003, 0.91454, 0.00543, 0.0, 0.0, 0.0, 0.0]])
+
+## Derived from manipulating Eq. B-3 in Hou et a.l
+# mox87_chi_prompt = (mox87_chi - np.sum(mox87_chi_delayed * mox87_beta, 0)) / (1 - mox87_beta_tot)
+mox87_chi_prompt = np.array([5.89738E-01, 4.09954E-01, 3.16425E-04, 1.18005E-07, 0.00000E-00, 0.00000E-00, 0.00000E-00])
+
+## Table A4 in Hou et al.
+mox87_velocities = np.array([2.23483E+09, 5.07520E+08, 3.93259E+07, 5.20109E+06, 1.79321E+06, 7.91377E+05, 3.05435E+05])
+
+mox87_xsdata.set_beta(mox87_beta)
+mox87_xsdata.set_decay_rate(decay_rate)
+mox87_xsdata.set_prompt_nu_fission((1 - mox87_beta_tot) * mox87_nu_fission)
+mox87_xsdata.set_delayed_nu_fission(mox87_beta * mox87_nu_fission)
+mox87_xsdata.set_chi_prompt(mox87_chi_prompt)
+mox87_xsdata.set_chi_delayed(mox87_chi_delayed)
+mox87_xsdata.set_inverse_velocity(1 / mox87_velocities)
+
+
+fiss_chamber_xsdata = openmc.XSdata('fiss_chamber', groups, num_delayed_groups=n_dg)
+fiss_chamber_xsdata.order = 0
+fiss_chamber_xsdata.set_total(
+    np.array([1.260320E-01, 2.931600E-01, 2.842500E-01, 2.810200E-01, 3.344600E-01, 5.656400E-01, 1.172140E+00]))
+fiss_chamber_xsdata.set_absorption(
+    np.array([5.11320E-04, 7.58130E-05, 3.16430E-04, 1.16750E-03, 3.39770E-03, 9.18860E-03, 2.32440E-02]))
+scatter_matrix = \
+    [[[6.616590E-02, 5.907000E-02, 2.833400E-04, 1.462200E-06, 2.064200E-08, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 2.403770E-01, 5.243500E-02, 2.499000E-04, 1.923900E-05, 2.987500E-06, 4.214000E-07],
+      [0.000000E-00, 0.000000E-00, 1.834250E-01, 9.228800E-02, 6.936500E-03, 1.079000E-03, 2.054300E-04],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 7.907690E-02, 1.699900E-01, 2.586000E-02, 4.925600E-03],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 3.734000E-05, 9.975700E-02, 2.067900E-01, 2.447800E-02],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 9.174200E-04, 3.167740E-01, 2.387600E-01],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 4.979300E-02, 1.09910E+00]]]
+scatter_matrix = np.array(scatter_matrix)
+scatter_matrix = np.rollaxis(scatter_matrix, 0, 3)
+fiss_chamber_xsdata.set_scatter_matrix(scatter_matrix)
+fiss_chamber_xsdata.set_fission(
+    np.array([4.79002E-09, 5.82564E-09, 4.63719E-07, 5.24406E-06, 1.45390E-07, 7.14972E-07, 2.08041E-06]))
+fiss_chamber_nu_fission = \
+        np.array([1.323401E-08, 1.434500E-08, 1.128599E-06, 1.276299E-05, 3.538502E-07, 1.740099E-06, 5.063302E-06])
+fiss_chamber_xsdata.set_nu_fission(fiss_chamber_nu_fission)
+fiss_chamber_chi = np.array([5.87910E-01, 4.11760E-01, 3.39060E-04, 1.17610E-07, 0.000000E-00, 0.000000E-00, 0.000000E-00])
+fiss_chamber_xsdata.set_chi(fiss_chamber_chi)
+
+# Delayed and prompt cross sections for fiss_chamber #
+# Hou et al. give no delayed data for the fission chamber, so set all delayed
+# cross sections to zero and all prompt cross sections to their total
+# equivalents
+fiss_chamber_beta = np.array([[0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00]])
+fiss_chamber_beta_tot = 0.00000E-00
+
+## Table A3 in Hou et al.
+fiss_chamber_chi_delayed = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+
+## Derived from manipulating Eq. B-3 in Hou et a.l
+# fiss_chamber_chi_prompt = (fiss_chamber_chi - np.sum(fiss_chamber_chi_delayed * fiss_chamber_beta, 0)) / (1 - fiss_chamber_beta_tot)
+fiss_chamber_chi_prompt = fiss_chamber_chi
+
+## Table A4 in Hou et al.
+fiss_chamber_velocities = np.array([2.24885E+09, 5.12300E+08, 3.75477E+07, 5.02783E+06, 1.66563E+06, 6.70396E+05, 2.51392E+05])
+
+fiss_chamber_xsdata.set_beta(fiss_chamber_beta)
+fiss_chamber_xsdata.set_decay_rate(np.zeros(n_dg))
+fiss_chamber_xsdata.set_prompt_nu_fission((1 - fiss_chamber_beta_tot) * fiss_chamber_nu_fission)
+fiss_chamber_xsdata.set_delayed_nu_fission(fiss_chamber_beta * fiss_chamber_nu_fission)
+fiss_chamber_xsdata.set_chi_prompt(fiss_chamber_chi_prompt)
+fiss_chamber_xsdata.set_chi_delayed(fiss_chamber_chi_delayed)
+fiss_chamber_xsdata.set_inverse_velocity(1 / fiss_chamber_velocities)
+
+
+guide_tube_xsdata = openmc.XSdata('guide_tube', groups)
+guide_tube_xsdata.order = 0
+guide_tube_xsdata.set_total(
+    np.array([1.260320E-01, 2.931600E-01, 2.842400E-01, 2.809600E-01, 3.344400E-01, 5.656400E-01, 1.172150E+00]))
+guide_tube_xsdata.set_absorption(
+    np.array([5.11320E-04, 7.58010E-05, 3.15720E-04, 1.15820E-03, 3.39750E-03, 9.18780E-03, 2.32420E-02]))
+scatter_matrix = \
+    [[[6.616590E-02, 5.907000E-02, 2.833400E-04, 1.462200E-06, 2.064200E-08, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 2.403770E-01, 5.243500E-02, 2.499000E-04, 1.923900E-05, 2.987500E-06, 4.214000E-07],
+      [0.000000E-00, 0.000000E-00, 1.832970E-01, 9.239700E-02, 6.944600E-03, 1.080300E-03, 2.056700E-04],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 7.885110E-02, 1.701400E-01, 2.588100E-02, 4.929700E-03],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 3.733300E-05, 9.973720E-02, 2.067900E-01, 2.447800E-02],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 9.172600E-04, 3.167650E-01, 2.387700E-01],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 4.979200E-02, 1.099120E+00]]]
+scatter_matrix = np.array(scatter_matrix)
+scatter_matrix = np.rollaxis(scatter_matrix, 0, 3)
+guide_tube_xsdata.set_scatter_matrix(scatter_matrix)
+
+## Table A4 in Hou et al.
+guide_tube_velocities = np.array([2.21473E+09, 4.54712E+08, 4.22099E+07, 5.36964E+06, 1.71422E+06, 7.63783E+05, 2.93629E+05])
+guide_tube_xsdata.set_inverse_velocity(1 / guide_tube_velocities)
+
+
+
+water_xsdata = openmc.XSdata('water', groups)
+water_xsdata.order = 0
+water_xsdata.set_total(
+    np.array([1.592060E-01, 4.129700E-01, 5.903100E-01, 5.843500E-01, 7.180000E-01, 1.254450E+00, 2.650380E+00]))
+water_xsdata.set_absorption(
+    np.array([6.01050E-04, 1.57930E-05, 3.37160E-04, 1.94060E-03, 5.74160E-03, 1.50010E-02, 3.72390E-02]))
+scatter_matrix = \
+    [[[4.447770E-02, 1.134000E-01, 7.234700E-04, 3.749900E-06, 5.318400E-08, 0.000000E-00, 0.000000E-00],
+      [0.000000E-00, 2.823340E-01, 1.299400E-01, 6.234000E-04, 4.800200E-05, 7.448600E-06, 1.045500E-06],
+      [0.000000E-00, 0.000000E-00, 3.452560E-01, 2.245700E-01, 1.699900E-02, 2.644300E-03, 5.034400E-04],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 9.102840E-02, 4.155100E-01, 6.373200E-02, 1.213900E-02],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 7.143700E-05, 1.391380E-01, 5.118200E-01, 6.122900E-02],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 2.215700E-03, 6.999130E-01, 5.373200E-01],
+      [0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 0.000000E-00, 1.324400E-01, 2.480700E+00]]]
+scatter_matrix = np.array(scatter_matrix)
+scatter_matrix = np.rollaxis(scatter_matrix, 0, 3)
+water_xsdata.set_scatter_matrix(scatter_matrix)
+
+## Table A4 in Hou et al.
+water_velocities = np.array([2.23517E+09, 4.98880E+08, 3.84974E+07, 5.12639E+06, 1.67542E+06, 7.26031E+05, 2.81629E+05])
+water_xsdata.set_inverse_velocity(1 / water_velocities)
+
+
+
+control_rod_xsdata = openmc.XSdata('control_rod', groups)
+control_rod_xsdata.order = 0
+control_rod_xsdata.set_total(
+    np.array([2.16768E-01, 4.80098E-01, 8.86369E-01, 9.70009E-01, 9.10482E-01, 1.13775E+00, 1.84048E+00]))
+control_rod_xsdata.set_absorption(
+    np.array([1.70490E-03, 8.36224E-03, 8.37901E-02, 3.97797E-01, 6.98763E-01, 9.29508E-01, 1.17836E+00]))
+scatter_matrix = \
+    [[[1.70563E-01, 4.44012E-02, 9.83670E-05, 1.27786E-07, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+      [0.00000E-00, 4.71050E-01, 6.85480E-04, 3.91395E-10, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+      [0.00000E-00, 0.00000E-00, 8.01859E-01, 7.20132E-04, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+      [0.00000E-00, 0.00000E-00, 0.00000E-00, 5.70752E-01, 1.46015E-03, 0.00000E-00, 0.00000E-00],
+      [0.00000E-00, 0.00000E-00, 0.00000E-00, 6.55562E-05, 2.07838E-01, 3.81486E-03, 3.69760E-09],
+      [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 1.02427E-03, 2.02465E-01, 4.75290E-03],
+      [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 3.53043E-03, 6.58597E-01]]]
+scatter_matrix = np.array(scatter_matrix)
+scatter_matrix = np.rollaxis(scatter_matrix, 0, 3)
+control_rod_xsdata.set_scatter_matrix(scatter_matrix)
+
+## Table A4 in Hou et al.
+control_rod_velocities = np.array([2.18553E+09, 4.21522E+08, 8.76487E+07, 7.47375E+06, 2.28533E+06, 1.01738E+06, 4.11374E+05])
+control_rod_xsdata.set_inverse_velocity(1 / control_rod_velocities)
+
+
+
+mg_cross_sections_file = openmc.MGXSLibrary(groups)
+mg_cross_sections_file.add_xsdatas([uo2_xsdata, mox43_xsdata, mox7_xsdata, mox87_xsdata,
+                                    fiss_chamber_xsdata, guide_tube_xsdata, water_xsdata,
+                                    control_rod_xsdata])
+mg_cross_sections_file.export_to_hdf5()
+
+
+###############################################################################
+#                 Exporting to OpenMC materials.xml File
+###############################################################################
+
+# Instantiate some Macroscopic Data
+uo2_data = openmc.Macroscopic('uo2')
+mox43_data = openmc.Macroscopic('mox43')
+mox7_data = openmc.Macroscopic('mox7')
+mox87_data = openmc.Macroscopic('mox87')
+fiss_chamber_data = openmc.Macroscopic('fiss_chamber')
+guide_tube_data = openmc.Macroscopic('guide_tube')
+water_data = openmc.Macroscopic('water')
+control_rod_data = openmc.Macroscopic('control_rod')
+
+# Instantiate Materials dictionary
+materials = {}
+
+# Instantiate some Materials and register the appropriate Nuclides
+materials['UO2'] = openmc.Material(name='UO2')
+materials['UO2'].set_density('macro', 1.0)
+materials['UO2'].add_macroscopic(uo2_data)
+
+materials['MOX 4.3%'] = openmc.Material(name='MOX 4.3%')
+materials['MOX 4.3%'].set_density('macro', 1.0)
+materials['MOX 4.3%'].add_macroscopic(mox43_data)
+
+materials['MOX 7.0%'] = openmc.Material(name='MOX 7.0%')
+materials['MOX 7.0%'].set_density('macro', 1.0)
+materials['MOX 7.0%'].add_macroscopic(mox7_data)
+
+materials['MOX 8.7%'] = openmc.Material(name='MOX 8.7%')
+materials['MOX 8.7%'].set_density('macro', 1.0)
+materials['MOX 8.7%'].add_macroscopic(mox87_data)
+
+materials['Fission Chamber'] = openmc.Material(name='Fission Chamber')
+materials['Fission Chamber'].set_density('macro', 1.0)
+materials['Fission Chamber'].add_macroscopic(fiss_chamber_data)
+
+materials['Guide Tube'] = openmc.Material(name='Guide Tube')
+materials['Guide Tube'].set_density('macro', 1.0)
+materials['Guide Tube'].add_macroscopic(guide_tube_data)
+
+materials['Water'] = openmc.Material(name='Water')
+materials['Water'].set_density('macro', 1.0)
+materials['Water'].add_macroscopic(water_data)
+
+materials['Control Rod'] = openmc.Material(name='Control Rod')
+materials['Control Rod'].set_density('macro', 1.0)
+materials['Control Rod'].add_macroscopic(control_rod_data)
