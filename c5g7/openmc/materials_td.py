@@ -72,7 +72,7 @@ uo2_chi_delayed = np.array([[0.00075, 0.98512, 0.01413, 0.0, 0.0, 0.0, 0.0],
                             [0.09346, 0.9026 , 0.00394, 0.0, 0.0, 0.0, 0.0]])
 
 
-## Derived from manipulating Eq. B-3 in Hou et a.l
+## Derived from manipulating Eq. B-3 in Hou et al.
 # uo2_chi_prompt = (uo2_chi - np.sum(uo2_chi_delayed * uo2_beta, 0)) / (1 - uo2_beta_tot)
 uo2_chi_prompt = np.array([5.91741E-01, 4.07977E-01, 2.91169E-04, 1.18440E-07, 0.00000E-00, 0.00000E-00, 0.00000E-00])
 
@@ -203,7 +203,7 @@ mox7_chi_delayed = np.array([[0.00075, 0.98512, 0.01413, 0.0, 0.0, 0.0, 0.0],
 
 ## Derived from manipulating Eq. B-3 in Hou et a.l
 # mox7_chi_prompt = (mox7_chi - np.sum(mox7_chi_delayed * mox7_beta, 0)) / (1 - mox7_beta_tot)
-mox7_chi_prompt = array([5.89742E-01, 4.09950E-01, 3.16377E-04, 1.18006E-07, 0.00000E-00, 0.00000E-00, 0.00000E-00])
+mox7_chi_prompt = np.array([5.89742E-01, 4.09950E-01, 3.16377E-04, 1.18006E-07, 0.00000E-00, 0.00000E-00, 0.00000E-00])
 
 ## Table A4 in Hou et al.
 mox7_velocities = np.array([2.23479E+09, 5.07355E+08, 3.91436E+07, 5.18647E+06, 1.78072E+06, 7.84470E+05, 3.02310E+05])

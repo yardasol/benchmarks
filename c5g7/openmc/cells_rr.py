@@ -1,5 +1,6 @@
 import openmc
 ## TODO: ADD OPTION FOR CONDITIONAL IMPORT FOR TD OR SS SIMULATIONS
+import numpy as np
 from materials_td import materials
 from surfaces_rr import surfaces
 
@@ -54,20 +55,20 @@ for pt in pincell_type:
     for i in range(8):
         cells[f'{pt} Inner A Azimuthal {i}'].region = (
             -surfaces['Pin Cell Inner Ring A'] &
-            +surfaces[f'Azimuthal Planes {i}'] &
-            -surfaces[f'Azimuthal Planes {(i+1) % 8}']
+            +surfaces[f'Azimuthal Plane {i}'] &
+            -surfaces[f'Azimuthal Plane {(i+1) % 8}']
         )
         cells[f'{pt} Inner B Azimuthal {i}'].region = (
             +surfaces['Pin Cell Inner Ring A'] &
             -surfaces['Pin Cell Inner Ring B'] &
-            +surfaces[f'Azimuthal Planes {i}'] &
-            -surfaces[f'Azimuthal Planes {(i+1) % 8}']
+            +surfaces[f'Azimuthal Plane {i}'] &
+            -surfaces[f'Azimuthal Plane {(i+1) % 8}']
         )
         cells[f'{pt} Inner C Azimuthal {i}'].region = (
             +surfaces['Pin Cell Inner Ring B'] &
             -surfaces['Pin Cell ZCylinder'] &
-            +surfaces[f'Azimuthal Planes {i}'] &
-            -surfaces[f'Azimuthal Planes {(i+1) % 8}']
+            +surfaces[f'Azimuthal Plane {i}'] &
+            -surfaces[f'Azimuthal Plane {(i+1) % 8}']
         )
 
 for pt in pincell_type:
@@ -75,27 +76,27 @@ for pt in pincell_type:
         cells[f'{pt} Moderator Inner A Azimuthal {i}'].region = (
             +surfaces['Pin Cell ZCylinder'] &
             -surfaces['Pin Cell Outer Ring A'] &
-            +surfaces[f'Azimuthal Planes {i}'] &
-            -surfaces[f'Azimuthal Planes {(i+1) % 8}']
+            +surfaces[f'Azimuthal Plane {i}'] &
+            -surfaces[f'Azimuthal Plane {(i+1) % 8}']
         )
         cells[f'{pt} Moderator Outer B Azimuthal {i}'].region = (
             +surfaces['Pin Cell Outer Ring A'] &
             -surfaces['Pin Cell Outer Ring B'] &
-            +surfaces[f'Azimuthal Planes {i}'] &
-            -surfaces[f'Azimuthal Planes {(i+1) % 8}']
+            +surfaces[f'Azimuthal Plane {i}'] &
+            -surfaces[f'Azimuthal Plane {(i+1) % 8}']
         )
         cells[f'{pt} Moderator Outer C Azimuthal {i}'].region = (
             +surfaces['Pin Cell Outer Ring B'] &
-            +surfaces[f'Azimuthal Planes {i}'] &
-            -surfaces[f'Azimuthal Planes {(i+1) % 8}']
+            +surfaces[f'Azimuthal Plane {i}'] &
+            -surfaces[f'Azimuthal Plane {(i+1) % 8}']
         )
 
 ## TODO: Delete this and make a bounding box for the universe in pin/build-xml-pin-rr.py
-cells['UO2 Pin'].region                   = +surfaces['Pin Cell ZCylinder'] & \
-                                            +surfaces['Pin x-min'] & \
-                                            -surfaces['Pin x-max'] & \
-                                            +surfaces['Pin y-min'] & \
-                                            -surfaces['Pin y-max']
+#cells['UO2 Pin'].region                   = +surfaces['Pin Cell ZCylinder'] & \
+#                                            +surfaces['Pin x-min'] & \
+#                                            -surfaces['Pin x-max'] & \
+#                                            +surfaces['Pin y-min'] & \
+#                                            -surfaces['Pin y-max']
 
 # Register Materials with Cells
 for pt in pincell_type:

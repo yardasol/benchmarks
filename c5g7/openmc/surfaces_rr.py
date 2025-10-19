@@ -15,12 +15,12 @@ fuel_or = openmc.ZCylinder(r=o_r, name='Fuel OR')
 
 # Instantiate Pin Cell ZCylinder surface
 surfaces['Pin Cell ZCylinder'] = openmc.ZCylinder(x0=0, y0=0, r=0.54, name='Pin Cell ZCylinder')
-surfaces['Pin Cell Inner Ring A'] inner_ring_a = openmc.ZCylinder(r=ir_a, name='Pin Cell Inner Ring A')
-surfaces['Pin Cell Inner Ring B'] inner_ring_b = openmc.ZCylinder(r=ir_b, name='Pin Cell Inner Ring B')
-surfaces['Pin Cell Outer Ring A'] outer_ring_a = openmc.ZCylinder(r=or_a, name='Pin Cell Outer Ring A')
-surfaces['Pin Cell Outer Ring B'] outer_ring_b = openmc.ZCylinder(r=or_b, name='Pin Cell Outer Ring B')
+surfaces['Pin Cell Inner Ring A'] = openmc.ZCylinder(r=ir_a, name='Pin Cell Inner Ring A')
+surfaces['Pin Cell Inner Ring B'] = openmc.ZCylinder(r=ir_b, name='Pin Cell Inner Ring B')
+surfaces['Pin Cell Outer Ring A'] = openmc.ZCylinder(r=or_a, name='Pin Cell Outer Ring A')
+surfaces['Pin Cell Outer Ring B'] = openmc.ZCylinder(r=or_b, name='Pin Cell Outer Ring B')
 
-surfaces['Pin Cell Outer Ring B'] outer_ring_b = openmc.ZCylinder(r=or_b, name='Pin Cell Outer Ring B')
+surfaces['Pin Cell Outer Ring B'] = openmc.ZCylinder(r=or_b, name='Pin Cell Outer Ring B')
 
 for i in range(8):
     angle = 2 * i * openmc.pi / 8

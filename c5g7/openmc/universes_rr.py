@@ -28,14 +28,14 @@ universes['Root']                       .add_cell(cells['Core'])
 
 for pt in pincell_type:
     for i in range(8):
-        universes['{st}'].add_cells(
+        universes[f'{pt}'].add_cells(
                 [
-                    cells[f'{st} Inner A Azimuthal {i}'],
-                    cells[f'{st} Inner B Azimuthal {i}'],
-                    cells[f'{st} Inner C Azimuthal {i}'],
-                    cells[f'{st} Moderator Inner A Azimuthal {i}'],
-                    cells[f'{st} Moderator Outer B Azimuthal {i}'],
-                    cells[f'{st} Moderator Outer C Azimuthal {i}']
+                    cells[f'{pt} Inner A Azimuthal {i}'],
+                    cells[f'{pt} Inner B Azimuthal {i}'],
+                    cells[f'{pt} Inner C Azimuthal {i}'],
+                    cells[f'{pt} Moderator Inner A Azimuthal {i}'],
+                    cells[f'{pt} Moderator Outer B Azimuthal {i}'],
+                    cells[f'{pt} Moderator Outer C Azimuthal {i}']
                 ]
         )
 
