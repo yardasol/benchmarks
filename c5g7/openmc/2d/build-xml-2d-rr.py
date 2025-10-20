@@ -16,17 +16,15 @@ inactive = 3500
 particles = 650
 
 ###############################################################################
-#                 Exporting to OpenMC materials.xml File
+#                       OpenMC materials.xml File
 ###############################################################################
 
 # Instantiate a Materials collection, register all Materials, and export to XML
-materials_file = openmc.Materials(materials.values())
-materials_file.cross_sections = './mgxs.h5'
-materials_file.export_to_xml()
-
+materials = openmc.Materials(materials.values())
+materials.cross_sections = './mgxs.h5'
 
 ###############################################################################
-#                 Exporting to OpenMC geometry.xml File
+#                       OpenMC geometry.xml File
 ###############################################################################
 
 # Instantiate Core boundaries
@@ -46,63 +44,139 @@ cells['Core'].fill = lattices['Core']
 # Instantiate a Geometry, register the root Universe, and export to XML
 geometry = openmc.Geometry()
 geometry.root_universe = universes['Root']
-geometry.export_to_xml()
 
 
 ###############################################################################
-#                   Exporting to OpenMC settings.xml File
+#                         OpenMC settings.xml File
 ###############################################################################
 
 # Instantiate a Settings, set all runtime parameters, and export to XML
-settings_file = openmc.Settings()
-settings_file.energy_mode = "multi-group"
-settings_file.batches = batches
-settings_file.inactive = inactive
-settings_file.particles = particles
-settings_file.output = {'tallies': True, 'summary': True}
+settings = openmc.Settings()
+settings.energy_mode = "multi-group"
+settings.batches = batches
+settings.inactive = inactive
+settings.particles = particles
+settings.output = {'tallies': True, 'summary': True}
 lower_left = (-32.13, -32.13, -1)
 upper_right = (32.13, 32.13, 1)
 uniform_dist = openmc.stats.Box(lower_left, upper_right)
 rr_source = openmc.IndependentSource(space=uniform_dist)
 
-settings_file.random_ray['distance_active'] = 628.0
-settings_file.random_ray['distance_inactive'] = 13.0
-settings_file.random_ray['ray_source'] = rr_source
-settings_file.random_ray['volume_normalized_flux_tallies'] = True
-settings_file.random_ray['bd_order'] = 4
-settings_file.random_ray['sample_method'] = 'halton'
-settings_file.random_ray['time_mode'] = 'ti'
-settings_file.random_ray['precursor_mode'] = 'bd'
+settings.random_ray['distance_active'] = 628.0
+settings.random_ray['distance_inactive'] = 13.0
+settings.random_ray['ray_source'] = rr_source
+settings.random_ray['volume_normalized_flux_tallies'] = True
+settings.random_ray['bd_order'] = 4
+settings.random_ray['sample_method'] = 'halton'
+settings.random_ray['time_mode'] = 'ti'
+settings.random_ray['precursor_mode'] = 'bd'
 
-settings_file.run_mode = "time dependent"
-settings_file.time_dependent = {
+settings.run_mode = "time dependent"
+settings.time_dependent = {
     "dt": 1,
     "n_timesteps": 1000,
     "timestep_units": "ms",
 }
-settings_file.export_to_xml()
 
 
 ###############################################################################
-#                   Exporting to OpenMC plots.xml File
+#                         OpenMC plots.xml File
 ###############################################################################
+import random
+plots = openmc.Plots()
 
-plot_1 = openmc.Plot(plot_id=1)
-plot_1.filename = 'plot_1'
-plot_1.origin = [0.0, 0.0, 0.0]
-plot_1.width = [64.26, 64.26]
-plot_1.pixels = [500, 500]
-plot_1.color_by = 'material'
-plot_1.basis = 'xy'
+plot = openmc.Plot.from_geometry(geometry, basis='xy')
+plot.color_by = 'cell'
+plot.pixels = (10000, 10000)
+cell_dict = {}
+# UO2, red
+r = 255
+for i in range(1,25):
+    g = random.randrange(0, 128, 1)
+    b = g
+    cell_dict[i] = (r, g, b)
+# MOX 4.3, green
+g = 224
+for i in range(25, 49):
+    r = random.randrange(0, 128, 1)
+    b = r
+    cell_dict[i] = (r, g, b)
+# MOX 7.0, orange
+r = 255
+for i in range(49, 73):
+    b = random.randrange(0, 64, 1)
+    g = 128 + b
+    cell_dict[i] = (r, g, b)
+# MOX 8.7, yellow
+r = 255
+for i in range(73, 97):
+    b = random.randrange(0, 64, 1)
+    g = r - b
+    cell_dict[i] = (r, g, b)
+# Fission Chamber, purple
+r = 255
+for i in range(97, 121):
+    g = random.randrange(0, 64, 1)
+    b = r - g
+    cell_dict[i] = (r, g, b)
+# Guide Tube, cyan
+g = 224
+for i in range(121, 145):
+    r = random.randrange(0, 128, 1)
+    b = g - r
+    cell_dict[i] = (r, g, b)
+# Control Rod, grey
+for i in range(145, 169):
+    r = random.randrange(112, 144, 1)
+    g = r
+    b = r
+    cell_dict[i] = (r, g, b)
+# Moderator, blue
+b = 255
+for i in range(169, 193):
+    r = random.randrange(0, 128, 1)
+    g = r
+    cell_dict[i] = (r, g, b)
+    cell_dict[i + 1 * 24] = (r, g, b)
+    cell_dict[i + 2 * 24] = (r, g, b)
+    cell_dict[i + 3 * 24] = (r, g, b)
+    cell_dict[i + 4 * 24] = (r, g, b)
+    cell_dict[i + 5 * 24] = (r, g, b)
+    cell_dict[i + 6 * 24] = (r, g, b)
+# Moderator Infinite, blue
+b = 255
+for i in range(345, 355):
+    r = random.randrange(0, 128, 1)
+    g = r
+    cell_dict[i] = (r, g, b)
 
-# Instantiate a Plots collection and export to XML
-plot_file = openmc.Plots([plot_1])
-plot_file.export_to_xml()
+plot.colors = cell_dict
+plots.append(plot)
+
+plot = openmc.Plot.from_geometry(geometry, basis='xy')
+plot.pixels = (10000, 10000)
+plot.color_by = 'material'
+plot.colors = {1: (255, 0, 0), # UO2, red
+               2: (0, 255, 0), # MOX 4.3, green
+               3: (255, 128, 0), # MOX 7, orange
+               4: (255, 255, 0), # MOX 8.7, yellow
+               5: (255, 0, 255), # Fission Chamber, purple
+               6: (0, 192, 192), # Guide Tube, cyan
+               7: (0, 0 , 255), # Water, blue
+               8: (128, 128, 128)  # Control rod, grey
+               }
+plots.append(plot)
 
 ###############################################################################
-#                   Exporting to OpenMC tallies.xml File
+#                         OpenMC tallies.xml File
 ###############################################################################
 
 # Instantiate a Tallies, register Tally/Mesh, and export to XML
-tallies_file = openmc.Tallies(tallies.values())
-tallies_file.export_to_xml()
+tallies = openmc.Tallies(tallies.values())
+
+###############################################################################
+#                       Export to OpenMC model.xml File
+###############################################################################
+
+model = openmc.Model(geometry, materials, settings, tallies, plots)
+model.export_to_model_xml()

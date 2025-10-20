@@ -122,11 +122,28 @@ lattices['MOX Rodded Assembly'].universes = \
 
 lattices['Reflector Unrodded Assembly'] = \
     openmc.RectLattice(lattice_id=105, name='Reflector Unrodded Assembly')
-lattices['Reflector Unrodded Assembly'].dimension = [1, 1]
+lattices['Reflector Unrodded Assembly'].dimension = [17, 17]
 lattices['Reflector Unrodded Assembly'].lower_left = [-10.71, -10.71]
-lattices['Reflector Unrodded Assembly'].pitch = [21.42, 21.42]
+lattices['Reflector Unrodded Assembly'].pitch = [1.26, 1.26]
 w = universes['Reflector']
-lattices['Reflector Unrodded Assembly'].universes = [[w]]
+lattices['Reflector Unrodded Assembly'].universes = \
+    [[w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w],
+     [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w]]
 
 lattices['Reflector Rodded Assembly'] = \
     openmc.RectLattice(lattice_id=106, name='Reflector Rodded Assembly')

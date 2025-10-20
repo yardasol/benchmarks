@@ -112,15 +112,30 @@ for pt in pincell_type:
         cells[f'{pt} Moderator Outer C Azimuthal {i}'].fill = materials['Water'] 
 
 # Material Cell
-reflector_infinite = openmc.Cell(fill=materials['Water'],
-                                 name='Reflector Infinite')
-ru = openmc.Universe()
-ru.add_cells([reflector_infinite])
+reflector_infinite = {}
+for i in range(10):
+    reflector_infinite[f'Reflector Infinite {i}'] = openmc.Cell(fill=materials['Water'],
+                                                                name=f'Reflector Infinite {i}')
+
+ru0 = openmc.Universe(universe_id=15, cells=[reflector_infinite['Reflector Infinite 0']])
+ru1 = openmc.Universe(universe_id=16, cells=[reflector_infinite['Reflector Infinite 1']])
+ru2 = openmc.Universe(universe_id=17, cells=[reflector_infinite['Reflector Infinite 2']])
+ru3 = openmc.Universe(universe_id=18, cells=[reflector_infinite['Reflector Infinite 3']])
+ru4 = openmc.Universe(universe_id=19, cells=[reflector_infinite['Reflector Infinite 4']])
+ru5 = openmc.Universe(universe_id=20, cells=[reflector_infinite['Reflector Infinite 5']])
+ru6 = openmc.Universe(universe_id=21, cells=[reflector_infinite['Reflector Infinite 6']])
+ru7 = openmc.Universe(universe_id=22, cells=[reflector_infinite['Reflector Infinite 7']])
+ru8 = openmc.Universe(universe_id=23, cells=[reflector_infinite['Reflector Infinite 8']])
+ru9 = openmc.Universe(universe_id=24, cells=[reflector_infinite['Reflector Infinite 9']])
 
 pitch = 1.26
-lattice = openmc.RectLattice()
+lattice = openmc.RectLattice(lattice_id=100)
 lattice.lower_left = [-pitch/2.0, -pitch/2.0]
 lattice.pitch = [pitch/10.0, pitch/10.0]
-lattice.universes = np.full((10, 10), ru)
-
+arr = np.array([ru1, ru2, ru3, ru4, ru5, ru6, ru7, ru8, ru9, ru0])
+univs = arr
+for i in range(1,10):
+    univs = np.vstack((univs, np.roll(arr, i)))
+np.random.shuffle(univs)
+lattice.universes = univs
 cells['Reflector'].fill = lattice
