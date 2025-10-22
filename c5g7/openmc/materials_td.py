@@ -306,10 +306,43 @@ fiss_chamber_xsdata.set_nu_fission(fiss_chamber_nu_fission)
 fiss_chamber_chi = np.array([5.87910E-01, 4.11760E-01, 3.39060E-04, 1.17610E-07, 0.000000E-00, 0.000000E-00, 0.000000E-00])
 fiss_chamber_xsdata.set_chi(fiss_chamber_chi)
 
+# Delayed and prompt cross sections for fiss-chamber #
+# No delayed data is given for fiss chamber, so we assumbe beta, chi-delayed, and lambda are zero
+fiss_chamber_beta = np.array([[0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00],
+                              [0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00, 0.00000E-00]])
+fiss_chamber_beta_tot = 0.0
+
+fiss_chamber_chi_delayed = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+
+
+## Derived from manipulating Eq. B-3 in Hou et al.
+# fiss_chamber_chi_delayed = (fiss_chamber_chi - np.sum(fiss_chamber_chi_delayed * fiss_chamber_beta, 0)) / (1 - fiss_chamber_beta_tot)
+fiss_chamber_chi_prompt = np.array([5.87910E-01, 4.11760E-01, 3.39060E-04, 1.17610E-07, 0.000000E-00, 0.000000E-00, 0.000000E-00])
+
+
 ## Table A4 in Hou et al.
 fiss_chamber_velocities = np.array([2.24885E+09, 5.12300E+08, 3.75477E+07, 5.02783E+06, 1.66563E+06, 6.70396E+05, 2.51392E+05])
-fiss_chamber_xsdata.set_inverse_velocity(1 / fiss_chamber_velocities)
 
+fiss_chamber_xsdata.set_beta(fiss_chamber_beta)
+fiss_chamber_xsdata.set_decay_rate(np.array([0.000E-00, 0.000E-00, 0.000E-00, 0.000E-00, 0.000E-00, 0.000E-00, 0.000E-00, 0.000E-00]))
+fiss_chamber_xsdata.set_prompt_nu_fission((1 - fiss_chamber_beta_tot) * fiss_chamber_nu_fission)
+fiss_chamber_xsdata.set_delayed_nu_fission(fiss_chamber_beta * fiss_chamber_nu_fission)
+fiss_chamber_xsdata.set_chi_prompt(fiss_chamber_chi_prompt)
+fiss_chamber_xsdata.set_chi_delayed(fiss_chamber_chi_delayed)
+fiss_chamber_xsdata.set_inverse_velocity(1 / fiss_chamber_velocities)
 
 guide_tube_xsdata = openmc.XSdata('guide_tube', groups)
 guide_tube_xsdata.order = 0
