@@ -166,7 +166,8 @@ plot.colors = {1: (255, 0, 0), # UO2, red
                5: (255, 0, 255), # Fission Chamber, purple
                6: (0, 192, 192), # Guide Tube, cyan
                7: (0, 0 , 255), # Water, blue
-               8: (128, 128, 128)  # Control rod, grey
+               8: (0, 0, 128),  # Water Reflector, blue
+               9: (128, 128, 128)  # Water Reflector, grey
                }
 plots.append(plot)
 

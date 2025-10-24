@@ -30,11 +30,11 @@ tallies['Global Rates'].filters = [energy_filter]
 tallies['Global Rates'].scores = ['flux', 'fission', 'nu-fission']
 
 tallies['Mesh Delayed'] = openmc.Tally(tally_id=3, name='tally 3')
-tallies['Mesh Delayed'].filters = [mesh_filter, delay_group_filter]
+tallies['Mesh Delayed'].filters = [mesh_filter, delay_filter]
 tallies['Mesh Delayed'].scores = ['precursors']
 
 tallies['Global Delayed'] = openmc.Tally(tally_id=4, name='tally 4')
-tallies['Global Delayed'].filters = [delay_group_filter]
-tallies['Global Rates'].scores = ['precursors']
+tallies['Global Delayed'].filters = [delay_filter]
+tallies['Global Delayed'].scores = ['precursors']
 
 

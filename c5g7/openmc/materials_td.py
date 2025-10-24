@@ -466,9 +466,19 @@ materials['Guide Tube'] = openmc.Material(name='Guide Tube')
 materials['Guide Tube'].set_density('macro', 1.0)
 materials['Guide Tube'].add_macroscopic(guide_tube_data)
 
+# Exercise 3-1 transient
+dens1 = np.linspace(1, 0.95, 100)
+dens2 = np.linspace(dens1[-2], 1, 100)
+dens3 = np.ones(800)
+densities = np.hstack((dens1, dens2, dens3))
+
 materials['Water'] = openmc.Material(name='Water')
-materials['Water'].set_density('macro', 1.0)
+materials['Water'].set_density('macro', 1.0, densities)
 materials['Water'].add_macroscopic(water_data)
+
+materials['Water Reflector'] = openmc.Material(name='Water Reflector')
+materials['Water Reflector'].set_density('macro', 1.0)
+materials['Water Reflector'].add_macroscopic(water_data)
 
 materials['Control Rod'] = openmc.Material(name='Control Rod')
 materials['Control Rod'].set_density('macro', 1.0)

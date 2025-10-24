@@ -135,8 +135,9 @@ for pt in pincell_type:
 # Material Cell
 reflector_infinite = {}
 for i in range(10):
-    reflector_infinite[f'Reflector Infinite {i}'] = openmc.Cell(fill=materials['Water'],
-                                                                name=f'Reflector Infinite {i}')
+    reflector_infinite[f'Reflector Infinite {i}'] = openmc.Cell(
+        fill=materials['Water Reflector'],
+        name=f'Reflector Infinite {i}')
 
 ru0 = openmc.Universe(universe_id=15, cells=[reflector_infinite['Reflector Infinite 0']])
 ru1 = openmc.Universe(universe_id=16, cells=[reflector_infinite['Reflector Infinite 1']])
