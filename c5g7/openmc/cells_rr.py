@@ -16,14 +16,20 @@ cells = {}
 # Normal cells
 for pt in pincell_type:
     for i in range(8):
-        cells[f'{pt} Inner A Azimuthal {i}'] = openmc.Cell(
-            name=f'{pt} Inner A Azimuthal {i}'
+        cells[f'{pt} Inner 1 Azimuthal {i}'] = openmc.Cell(
+            name=f'{pt} Inner 1 Azimuthal {i}'
         )
-        cells[f'{pt} Inner B Azimuthal {i}'] = openmc.Cell(
-            name=f'{pt} Inner B Azimuthal {i}'
+        cells[f'{pt} Inner 2 Azimuthal {i}'] = openmc.Cell(
+            name=f'{pt} Inner 3 Azimuthal {i}'
         )
-        cells[f'{pt} Inner C Azimuthal {i}'] = openmc.Cell(
-            name=f'{pt} Inner C Azimuthal {i}'
+        cells[f'{pt} Inner 3 Azimuthal {i}'] = openmc.Cell(
+            name=f'{pt} Inner 3 Azimuthal {i}'
+        )
+        cells[f'{pt} Inner 4 Azimuthal {i}'] = openmc.Cell(
+            name=f'{pt} Inner 4 Azimuthal {i}'
+        )
+        cells[f'{pt} Inner 5 Azimuthal {i}'] = openmc.Cell(
+            name=f'{pt} Inner 5 Azimuthal {i}'
         )
 
 for pt in pincell_type:
@@ -53,19 +59,31 @@ cells['Core']                        = openmc.Cell(name='Core')
 # Use surface half-spaces to define regions
 for pt in pincell_type:
     for i in range(8):
-        cells[f'{pt} Inner A Azimuthal {i}'].region = (
-            -surfaces['Pin Cell Inner Ring A'] &
+        cells[f'{pt} Inner 1 Azimuthal {i}'].region = (
+            -surfaces['Pin Cell Inner Ring 1'] &
             +surfaces[f'Azimuthal Plane {i}'] &
             -surfaces[f'Azimuthal Plane {(i+1) % 8}']
         )
-        cells[f'{pt} Inner B Azimuthal {i}'].region = (
-            +surfaces['Pin Cell Inner Ring A'] &
-            -surfaces['Pin Cell Inner Ring B'] &
+        cells[f'{pt} Inner 2 Azimuthal {i}'].region = (
+            +surfaces['Pin Cell Inner Ring 1'] &
+            -surfaces['Pin Cell Inner Ring 2'] &
             +surfaces[f'Azimuthal Plane {i}'] &
             -surfaces[f'Azimuthal Plane {(i+1) % 8}']
         )
-        cells[f'{pt} Inner C Azimuthal {i}'].region = (
-            +surfaces['Pin Cell Inner Ring B'] &
+        cells[f'{pt} Inner 3 Azimuthal {i}'].region = (
+            +surfaces['Pin Cell Inner Ring 2'] &
+            -surfaces['Pin Cell Inner Ring 3'] &
+            +surfaces[f'Azimuthal Plane {i}'] &
+            -surfaces[f'Azimuthal Plane {(i+1) % 8}']
+        )
+        cells[f'{pt} Inner 4 Azimuthal {i}'].region = (
+            +surfaces['Pin Cell Inner Ring 3'] &
+            -surfaces['Pin Cell Inner Ring 4'] &
+            +surfaces[f'Azimuthal Plane {i}'] &
+            -surfaces[f'Azimuthal Plane {(i+1) % 8}']
+        )
+        cells[f'{pt} Inner 5 Azimuthal {i}'].region = (
+            +surfaces['Pin Cell Inner Ring 4'] &
             -surfaces['Pin Cell ZCylinder'] &
             +surfaces[f'Azimuthal Plane {i}'] &
             -surfaces[f'Azimuthal Plane {(i+1) % 8}']
@@ -101,15 +119,18 @@ for pt in pincell_type:
 # Register Materials with Cells
 for pt in pincell_type:
     for i in range(8):
-        cells[f'{pt} Inner A Azimuthal {i}'].fill = materials[pt]
-        cells[f'{pt} Inner B Azimuthal {i}'].fill = materials[pt] 
-        cells[f'{pt} Inner C Azimuthal {i}'].fill = materials[pt]
+        cells[f'{pt} Inner 1 Azimuthal {i}'].fill = materials[pt]
+        cells[f'{pt} Inner 2 Azimuthal {i}'].fill = materials[pt]
+        cells[f'{pt} Inner 3 Azimuthal {i}'].fill = materials[pt]
+        cells[f'{pt} Inner 4 Azimuthal {i}'].fill = materials[pt]
+        cells[f'{pt} Inner 5 Azimuthal {i}'].fill = materials[pt]
+
 
 for pt in pincell_type:
     for i in range(8):
-        cells[f'{pt} Moderator Inner A Azimuthal {i}'].fill = materials['Water'] 
-        cells[f'{pt} Moderator Outer B Azimuthal {i}'].fill = materials['Water'] 
-        cells[f'{pt} Moderator Outer C Azimuthal {i}'].fill = materials['Water'] 
+        cells[f'{pt} Moderator Inner A Azimuthal {i}'].fill = materials['Water']
+        cells[f'{pt} Moderator Outer B Azimuthal {i}'].fill = materials['Water']
+        cells[f'{pt} Moderator Outer C Azimuthal {i}'].fill = materials['Water']
 
 # Material Cell
 reflector_infinite = {}
@@ -122,19 +143,14 @@ ru1 = openmc.Universe(universe_id=16, cells=[reflector_infinite['Reflector Infin
 ru2 = openmc.Universe(universe_id=17, cells=[reflector_infinite['Reflector Infinite 2']])
 ru3 = openmc.Universe(universe_id=18, cells=[reflector_infinite['Reflector Infinite 3']])
 ru4 = openmc.Universe(universe_id=19, cells=[reflector_infinite['Reflector Infinite 4']])
-ru5 = openmc.Universe(universe_id=20, cells=[reflector_infinite['Reflector Infinite 5']])
-ru6 = openmc.Universe(universe_id=21, cells=[reflector_infinite['Reflector Infinite 6']])
-ru7 = openmc.Universe(universe_id=22, cells=[reflector_infinite['Reflector Infinite 7']])
-ru8 = openmc.Universe(universe_id=23, cells=[reflector_infinite['Reflector Infinite 8']])
-ru9 = openmc.Universe(universe_id=24, cells=[reflector_infinite['Reflector Infinite 9']])
 
 pitch = 1.26
 lattice = openmc.RectLattice(lattice_id=100)
 lattice.lower_left = [-pitch/2.0, -pitch/2.0]
-lattice.pitch = [pitch/10.0, pitch/10.0]
-arr = np.array([ru1, ru2, ru3, ru4, ru5, ru6, ru7, ru8, ru9, ru0])
+lattice.pitch = [pitch/5.0, pitch/5.0]
+arr = np.array([ru1, ru2, ru3, ru4, ru0])
 univs = arr
-for i in range(1,10):
+for i in range(1,5):
     univs = np.vstack((univs, np.roll(arr, i)))
 np.random.shuffle(univs)
 lattice.universes = univs

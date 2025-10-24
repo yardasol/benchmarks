@@ -30,9 +30,11 @@ for pt in pincell_type:
     for i in range(8):
         universes[f'{pt}'].add_cells(
                 [
-                    cells[f'{pt} Inner A Azimuthal {i}'],
-                    cells[f'{pt} Inner B Azimuthal {i}'],
-                    cells[f'{pt} Inner C Azimuthal {i}'],
+                    cells[f'{pt} Inner 1 Azimuthal {i}'],
+                    cells[f'{pt} Inner 2 Azimuthal {i}'],
+                    cells[f'{pt} Inner 3 Azimuthal {i}'],
+                    cells[f'{pt} Inner 4 Azimuthal {i}'],
+                    cells[f'{pt} Inner 5 Azimuthal {i}'],
                     cells[f'{pt} Moderator Inner A Azimuthal {i}'],
                     cells[f'{pt} Moderator Outer B Azimuthal {i}'],
                     cells[f'{pt} Moderator Outer C Azimuthal {i}']

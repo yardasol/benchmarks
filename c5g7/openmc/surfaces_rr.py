@@ -1,4 +1,5 @@
 import openmc
+import numpy as np
 
 ###############################################################################
 #                     Create a dictionary of all shared cells
@@ -7,19 +8,20 @@ import openmc
 # Create a dictionary to store the surfaces
 surfaces = {}
 o_r = 0.54
-ir_a = 0.33
-ir_b = 0.45
 or_a = 0.60
-or_b = 0.69
+or_b = 1.26/2
 fuel_or = openmc.ZCylinder(r=o_r, name='Fuel OR')
 
-# Instantiate Pin Cell ZCylinder surface
-surfaces['Pin Cell ZCylinder'] = openmc.ZCylinder(x0=0, y0=0, r=0.54, name='Pin Cell ZCylinder')
-surfaces['Pin Cell Inner Ring A'] = openmc.ZCylinder(r=ir_a, name='Pin Cell Inner Ring A')
-surfaces['Pin Cell Inner Ring B'] = openmc.ZCylinder(r=ir_b, name='Pin Cell Inner Ring B')
-surfaces['Pin Cell Outer Ring A'] = openmc.ZCylinder(r=or_a, name='Pin Cell Outer Ring A')
-surfaces['Pin Cell Outer Ring B'] = openmc.ZCylinder(r=or_b, name='Pin Cell Outer Ring B')
+# Instantiate Pin Cell ZCylinder surfaces
+## These surfaces create equal area rings!
+surfaces['Pin Cell ZCylinder'] = openmc.ZCylinder(x0=0, y0=0, r=o_r, name='Pin Cell ZCylinder')
+surfaces['Pin Cell Inner Ring 1'] = openmc.ZCylinder(r=o_r * np.sqrt(1/5), name='Pin Cell Inner Ring 1')
+surfaces['Pin Cell Inner Ring 2'] = openmc.ZCylinder(r=o_r * np.sqrt(2/5), name='Pin Cell Inner Ring 2')
+surfaces['Pin Cell Inner Ring 3'] = openmc.ZCylinder(r=o_r * np.sqrt(3/5), name='Pin Cell Inner Ring 3')
+surfaces['Pin Cell Inner Ring 4'] = openmc.ZCylinder(r=o_r * np.sqrt(4/5), name='Pin Cell Inner Ring 4')
 
+## TODO
+surfaces['Pin Cell Outer Ring A'] = openmc.ZCylinder(r= o_r + (or_b - o_r)/2, name='Pin Cell Outer Ring A')
 surfaces['Pin Cell Outer Ring B'] = openmc.ZCylinder(r=or_b, name='Pin Cell Outer Ring B')
 
 for i in range(8):

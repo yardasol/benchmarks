@@ -4,7 +4,7 @@ sys.path.append('../')
 from materials_td import materials
 from lattices_rr import lattices, universes, cells
 from surfaces_rr import surfaces
-from tally import tallies
+from tally_td import tallies
 
 ###############################################################################
 #                      Simulation Input File Parameters
@@ -12,7 +12,7 @@ from tally import tallies
 
 # OpenMC simulation parameters
 batches = 20000
-inactive = 3500 
+inactive = 3500
 particles = 650
 
 ###############################################################################
@@ -91,49 +91,49 @@ plot.pixels = (10000, 10000)
 cell_dict = {}
 # UO2, red
 r = 255
-for i in range(1,25):
+for i in range(1,41):
     g = random.randrange(0, 128, 1)
     b = g
     cell_dict[i] = (r, g, b)
 # MOX 4.3, green
 g = 224
-for i in range(25, 49):
+for i in range(41, 81):
     r = random.randrange(0, 128, 1)
     b = r
     cell_dict[i] = (r, g, b)
 # MOX 7.0, orange
 r = 255
-for i in range(49, 73):
+for i in range(81, 121):
     b = random.randrange(0, 64, 1)
     g = 128 + b
     cell_dict[i] = (r, g, b)
 # MOX 8.7, yellow
 r = 255
-for i in range(73, 97):
+for i in range(121, 161):
     b = random.randrange(0, 64, 1)
     g = r - b
     cell_dict[i] = (r, g, b)
 # Fission Chamber, purple
 r = 255
-for i in range(97, 121):
+for i in range(161, 201):
     g = random.randrange(0, 64, 1)
     b = r - g
     cell_dict[i] = (r, g, b)
 # Guide Tube, cyan
 g = 224
-for i in range(121, 145):
+for i in range(201, 241):
     r = random.randrange(0, 128, 1)
     b = g - r
     cell_dict[i] = (r, g, b)
 # Control Rod, grey
-for i in range(145, 169):
+for i in range(241, 281):
     r = random.randrange(112, 144, 1)
     g = r
     b = r
     cell_dict[i] = (r, g, b)
 # Moderator, blue
 b = 255
-for i in range(169, 193):
+for i in range(281, 305):
     r = random.randrange(0, 128, 1)
     g = r
     cell_dict[i] = (r, g, b)
@@ -145,16 +145,19 @@ for i in range(169, 193):
     cell_dict[i + 6 * 24] = (r, g, b)
 # Moderator Infinite, blue
 b = 255
-for i in range(345, 355):
+for i in range(457, 462):
     r = random.randrange(0, 128, 1)
     g = r
     cell_dict[i] = (r, g, b)
 
+plot.width = (7 * 1.26, 7 * 1.26)
+plot.origin = ((21.42 - 1.26)/2, (-21.42 + 1.26)/2, 0)
+plot.pixels = (1000, 1000)
 plot.colors = cell_dict
 plots.append(plot)
 
 plot = openmc.Plot.from_geometry(geometry, basis='xy')
-plot.pixels = (10000, 10000)
+plot.pixels = (1000, 1000)
 plot.color_by = 'material'
 plot.colors = {1: (255, 0, 0), # UO2, red
                2: (0, 255, 0), # MOX 4.3, green

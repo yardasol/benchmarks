@@ -7,10 +7,11 @@ import numpy as np
 ###############################################################################
 
 # Instantiate the energy group data
-groups = openmc.mgxs.EnergyGroups(np.array([0.0, 0.13, 0.63, 4.1, 55.6, 9.2e3, 1.36e6, 1.0e7]))
+egroups = np.array([0.0, 0.13, 0.63, 4.1, 55.6, 9.2e3, 1.36e6, 1.0e7])
+groups = openmc.mgxs.EnergyGroups(egroups)
 
 # Number of delayed groups
-# Delayed cross section values 
+# Delayed cross section values
 # come from Hou et al., "OECD/NEA benchmark for time-dependnet neutron
 # transport calculations without homogeniztaion"
 # DOI: 10.1016/j.nucengdes.2017.02.008
@@ -61,7 +62,7 @@ uo2_beta = np.array([[2.13333E-04, 2.13333E-04, 2.13333E-04, 2.13333E-04, 2.1333
 # the actual tot is 7.009223E-03
 uo2_beta_tot = 7.00922E-03
 
-## Table A3 in Hou et al. 
+## Table A3 in Hou et al.
 uo2_chi_delayed = np.array([[0.00075, 0.98512, 0.01413, 0.0, 0.0, 0.0, 0.0],
                             [0.03049, 0.96907, 0.00044, 0.0, 0.0, 0.0, 0.0],
                             [0.00457, 0.97401, 0.02142, 0.0, 0.0, 0.0, 0.0],
@@ -188,8 +189,8 @@ mox7_beta = np.array([[7.65120E-05, 7.65120E-05, 7.65120E-05, 7.65120E-05, 7.651
                       [4.29227E-04, 4.29227E-04, 4.29227E-04, 4.29227E-04, 4.29227E-04, 4.29227E-04, 4.29227E-04],
                       [3.18971E-04, 3.18971E-04, 3.18971E-04, 3.18971E-04, 3.18971E-04, 3.18971E-04, 3.18971E-04],
                       [1.21830E-04, 1.21830E-04, 1.21830E-04, 1.21830E-04, 1.21830E-04, 1.21830E-04, 1.21830E-04]])
-# The actual tot is 3.354901E-03 
-mox7_beta_tot = 3.35490E-03 
+# The actual tot is 3.354901E-03
+mox7_beta_tot = 3.35490E-03
 
 ## Table A3 in Hou et al.
 mox7_chi_delayed = np.array([[0.00075, 0.98512, 0.01413, 0.0, 0.0, 0.0, 0.0],
@@ -252,8 +253,8 @@ mox87_beta = np.array([[7.58799E-05, 7.58799E-05, 7.58799E-05, 7.58799E-05, 7.58
                        [4.29965E-04, 4.29965E-04, 4.29965E-04, 4.29965E-04, 4.29965E-04, 4.29965E-04, 4.29965E-04],
                        [3.19265E-04, 3.19265E-04, 3.19265E-04, 3.19265E-04, 3.19265E-04, 3.19265E-04, 3.19265E-04],
                        [1.21188E-04, 1.21188E-04, 1.21188E-04, 1.21188E-04, 1.21188E-04, 1.21188E-04, 1.21188E-04]])
-# The actual tot is 3.3469829E-03 
-mox87_beta_tot = 3.34698E-03 
+# The actual tot is 3.3469829E-03
+mox87_beta_tot = 3.34698E-03
 
 ## Table A3 in Hou et al.
 mox87_chi_delayed = np.array([[0.00075, 0.98512, 0.01413, 0.0, 0.0, 0.0, 0.0],
@@ -281,7 +282,7 @@ mox87_xsdata.set_chi_delayed(mox87_chi_delayed)
 mox87_xsdata.set_inverse_velocity(1 / mox87_velocities)
 
 
-fiss_chamber_xsdata = openmc.XSdata('fiss_chamber', groups)
+fiss_chamber_xsdata = openmc.XSdata('fiss_chamber', groups, num_delayed_groups=n_dg)
 fiss_chamber_xsdata.order = 0
 fiss_chamber_xsdata.set_total(
     np.array([1.260320E-01, 2.931600E-01, 2.842500E-01, 2.810200E-01, 3.344600E-01, 5.656400E-01, 1.172140E+00]))
