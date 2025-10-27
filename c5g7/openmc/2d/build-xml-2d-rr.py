@@ -56,7 +56,7 @@ settings.energy_mode = "multi-group"
 settings.batches = batches
 settings.inactive = inactive
 settings.particles = particles
-settings.output = {'tallies': True, 'summary': True}
+settings.output = {'tallies': False, 'summary': True}
 lower_left = (-32.13, -32.13, -1)
 upper_right = (32.13, 32.13, 1)
 uniform_dist = openmc.stats.Box(lower_left, upper_right)
@@ -87,7 +87,6 @@ plots = openmc.Plots()
 
 plot = openmc.Plot.from_geometry(geometry, basis='xy')
 plot.color_by = 'cell'
-plot.pixels = (10000, 10000)
 cell_dict = {}
 # UO2, red
 r = 255
@@ -152,12 +151,12 @@ for i in range(457, 462):
 
 plot.width = (7 * 1.26, 7 * 1.26)
 plot.origin = ((21.42 - 1.26)/2, (-21.42 + 1.26)/2, 0)
-plot.pixels = (1000, 1000)
+plot.pixels = (2000, 2000)
 plot.colors = cell_dict
 plots.append(plot)
 
 plot = openmc.Plot.from_geometry(geometry, basis='xy')
-plot.pixels = (1000, 1000)
+plot.pixels = (2000, 2000)
 plot.color_by = 'material'
 plot.colors = {1: (255, 0, 0), # UO2, red
                2: (0, 255, 0), # MOX 4.3, green
