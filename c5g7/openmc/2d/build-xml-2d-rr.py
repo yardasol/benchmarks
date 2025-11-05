@@ -31,7 +31,7 @@ materials.cross_sections = './mgxs.h5'
 cells['Core'].region = +surfaces['Core x-min'] & +surfaces['Core y-min'] & \
     -surfaces['Core x-max'] & -surfaces['Core y-max']
 
-lattices['Core'] = openmc.RectLattice(lattice_id=201, name='3x3 core lattice')
+lattices['Core'] = openmc.RectLattice(lattice_id=2010, name='3x3 core lattice')
 lattices['Core'].dimension = [3, 3]
 lattices['Core'].lower_left = [-32.13, -32.13]
 lattices['Core'].pitch = [21.42, 21.42]

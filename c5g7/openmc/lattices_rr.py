@@ -9,7 +9,7 @@ from universes_rr import universes, cells
 # Instantiate the Lattices
 lattices = {}
 lattices['UO2 Unrodded Assembly'] = \
-    openmc.RectLattice(lattice_id=101, name='UO2 Unrodded Assembly')
+    openmc.RectLattice(lattice_id=1010, name='UO2 Unrodded Assembly')
 lattices['UO2 Unrodded Assembly'].dimension = [17, 17]
 lattices['UO2 Unrodded Assembly'].lower_left = [-10.71, -10.71]
 lattices['UO2 Unrodded Assembly'].pitch = [1.26, 1.26]
@@ -36,7 +36,7 @@ lattices['UO2 Unrodded Assembly'].universes = \
      [u, u, u, u, u, u, u, u, u, u, u, u, u, u, u, u, u]]
 
 lattices['UO2 Rodded Assembly'] = \
-    openmc.RectLattice(lattice_id=102, name='UO2 Rodded Assembly')
+    openmc.RectLattice(lattice_id=1020, name='UO2 Rodded Assembly')
 lattices['UO2 Rodded Assembly'].dimension = [17, 17]
 lattices['UO2 Rodded Assembly'].lower_left = [-10.71, -10.71]
 lattices['UO2 Rodded Assembly'].pitch = [1.26, 1.26]
@@ -63,7 +63,7 @@ lattices['UO2 Rodded Assembly'].universes = \
      [u, u, u, u, u, u, u, u, u, u, u, u, u, u, u, u, u]]
 
 lattices['MOX Unrodded Assembly'] = \
-    openmc.RectLattice(lattice_id=103, name='MOX Unrodded Assembly')
+    openmc.RectLattice(lattice_id=1030, name='MOX Unrodded Assembly')
 lattices['MOX Unrodded Assembly'].dimension = [17, 17]
 lattices['MOX Unrodded Assembly'].lower_left = [-10.71, -10.71]
 lattices['MOX Unrodded Assembly'].pitch = [1.26, 1.26]
@@ -92,7 +92,7 @@ lattices['MOX Unrodded Assembly'].universes = \
      [m, m, m, m, m, m, m, m, m, m, m, m, m, m, m, m, m]]
 
 lattices['MOX Rodded Assembly'] = \
-    openmc.RectLattice(lattice_id=104, name='MOX Rodded Assembly')
+    openmc.RectLattice(lattice_id=1040, name='MOX Rodded Assembly')
 lattices['MOX Rodded Assembly'].dimension = [17, 17]
 lattices['MOX Rodded Assembly'].lower_left = [-10.71, -10.71]
 lattices['MOX Rodded Assembly'].pitch = [1.26, 1.26]
@@ -121,7 +121,7 @@ lattices['MOX Rodded Assembly'].universes = \
      [m, m, m, m, m, m, m, m, m, m, m, m, m, m, m, m, m]]
 
 lattices['Reflector Unrodded Assembly'] = \
-    openmc.RectLattice(lattice_id=105, name='Reflector Unrodded Assembly')
+    openmc.RectLattice(lattice_id=1050, name='Reflector Unrodded Assembly')
 lattices['Reflector Unrodded Assembly'].dimension = [17, 17]
 lattices['Reflector Unrodded Assembly'].lower_left = [-10.71, -10.71]
 lattices['Reflector Unrodded Assembly'].pitch = [1.26, 1.26]
@@ -146,7 +146,7 @@ lattices['Reflector Unrodded Assembly'].universes = \
      [w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w, w]]
 
 lattices['Reflector Rodded Assembly'] = \
-    openmc.RectLattice(lattice_id=106, name='Reflector Rodded Assembly')
+    openmc.RectLattice(lattice_id=1060, name='Reflector Rodded Assembly')
 lattices['Reflector Rodded Assembly'].dimension = [17, 17]
 lattices['Reflector Rodded Assembly'].lower_left = [-10.71, -10.71]
 lattices['Reflector Rodded Assembly'].pitch = [1.26, 1.26]

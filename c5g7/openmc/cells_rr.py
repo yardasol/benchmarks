@@ -146,7 +146,7 @@ ru3 = openmc.Universe(universe_id=18, cells=[reflector_infinite['Reflector Infin
 ru4 = openmc.Universe(universe_id=19, cells=[reflector_infinite['Reflector Infinite 4']])
 
 pitch = 1.26
-lattice = openmc.RectLattice(lattice_id=100)
+lattice = openmc.RectLattice(lattice_id=1000)
 lattice.lower_left = [-pitch/2.0, -pitch/2.0]
 lattice.pitch = [pitch/5.0, pitch/5.0]
 arr = np.array([ru1, ru2, ru3, ru4, ru0])
