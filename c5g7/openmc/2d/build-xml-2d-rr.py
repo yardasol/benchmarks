@@ -66,16 +66,16 @@ settings.random_ray['distance_active'] = 628.0
 settings.random_ray['distance_inactive'] = 13.0
 settings.random_ray['ray_source'] = rr_source
 settings.random_ray['volume_normalized_flux_tallies'] = True
-settings.random_ray['bd_order'] = 4
+settings.random_ray['bd_order'] = 3
 settings.random_ray['sample_method'] = 'halton'
 settings.random_ray['time_mode'] = 'ti'
 settings.random_ray['precursor_mode'] = 'bd'
 
 settings.run_mode = "time dependent"
 settings.time_dependent = {
-    "dt": 1,
+    "dt": 0.01,
     "n_timesteps": 1000,
-    "timestep_units": "ms",
+    "timestep_units": "s",
 }
 
 
