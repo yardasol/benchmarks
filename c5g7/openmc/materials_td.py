@@ -417,7 +417,7 @@ control_rod_xsdata.set_inverse_velocity(1 / control_rod_velocities)
 
 
 
-mg_cross_sections_file = openmc.MGXSLibrary(groups)
+mg_cross_sections_file = openmc.MGXSLibrary(groups, num_delayed_groups=n_dg)
 mg_cross_sections_file.add_xsdatas([uo2_xsdata, mox43_xsdata, mox7_xsdata, mox87_xsdata,
                                     fiss_chamber_xsdata, guide_tube_xsdata, water_xsdata,
                                     control_rod_xsdata])
