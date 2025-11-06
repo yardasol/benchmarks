@@ -9,7 +9,7 @@ import numpy as np
 surfaces = {}
 o_r = 0.54
 or_a = 0.60
-or_b = 1.26/2
+or_b = 0.69
 fuel_or = openmc.ZCylinder(r=o_r, name='Fuel OR')
 
 # Instantiate Pin Cell ZCylinder surfaces
@@ -20,7 +20,6 @@ surfaces['Pin Cell Inner Ring 2'] = openmc.ZCylinder(r=o_r * np.sqrt(2/5), name=
 surfaces['Pin Cell Inner Ring 3'] = openmc.ZCylinder(r=o_r * np.sqrt(3/5), name='Pin Cell Inner Ring 3')
 surfaces['Pin Cell Inner Ring 4'] = openmc.ZCylinder(r=o_r * np.sqrt(4/5), name='Pin Cell Inner Ring 4')
 
-## TODO
 surfaces['Pin Cell Outer Ring A'] = openmc.ZCylinder(r= o_r + (or_b - o_r)/2, name='Pin Cell Outer Ring A')
 surfaces['Pin Cell Outer Ring B'] = openmc.ZCylinder(r=or_b, name='Pin Cell Outer Ring B')
 
