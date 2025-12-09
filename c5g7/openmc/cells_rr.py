@@ -20,7 +20,7 @@ for pt in pincell_type:
             name=f'{pt} Inner 1 Azimuthal {i}'
         )
         cells[f'{pt} Inner 2 Azimuthal {i}'] = openmc.Cell(
-            name=f'{pt} Inner 3 Azimuthal {i}'
+            name=f'{pt} Inner 2 Azimuthal {i}'
         )
         cells[f'{pt} Inner 3 Azimuthal {i}'] = openmc.Cell(
             name=f'{pt} Inner 3 Azimuthal {i}'
