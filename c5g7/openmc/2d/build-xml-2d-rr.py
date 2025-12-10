@@ -11,7 +11,7 @@ from tally_td import tallies
 ###############################################################################
 
 # OpenMC simulation parameters
-batches = 20000
+batches = 10000
 inactive = 3500
 particles = 650
 
@@ -66,10 +66,10 @@ settings.random_ray['distance_active'] = 628.0
 settings.random_ray['distance_inactive'] = 13.0
 settings.random_ray['ray_source'] = rr_source
 settings.random_ray['volume_normalized_flux_tallies'] = True
-settings.random_ray['bd_order'] = 3
+settings.random_ray['bd_order'] = 1
 settings.random_ray['sample_method'] = 'halton'
-settings.random_ray['time_mode'] = 'ti'
-settings.random_ray['precursor_mode'] = 'bd'
+settings.random_ray['time_method'] = 'ti'
+settings.random_ray['precursor_method'] = 'bd'
 
 settings.run_mode = "time dependent"
 settings.time_dependent = {
