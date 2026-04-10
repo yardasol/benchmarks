@@ -66,13 +66,12 @@ settings.random_ray['distance_active'] = 628.0
 settings.random_ray['distance_inactive'] = 13.0
 settings.random_ray['ray_source'] = rr_source
 settings.random_ray['volume_normalized_flux_tallies'] = True
-settings.random_ray['bd_order'] = 1
 settings.random_ray['sample_method'] = 'halton'
-settings.random_ray['time_method'] = 'ti'
-settings.random_ray['precursor_method'] = 'bd'
+settings.random_ray['bd_order'] = 3
+settings.random_ray['time_derivative_method'] = 'isotropic'
 
-settings.run_mode = "time dependent"
-settings.time_dependent = {
+settings.kinetic_simulation = True
+settings.timestep_parameters = {
     "dt": 0.01,
     "n_timesteps": 1000,
     "timestep_units": "s",
@@ -85,7 +84,7 @@ settings.time_dependent = {
 import random
 plots = openmc.Plots()
 
-plot = openmc.Plot.from_geometry(geometry, basis='xy')
+plot = openmc.SlicePlot.from_geometry(geometry, basis='xy')
 plot.color_by = 'cell'
 cell_dict = {}
 # UO2, red
@@ -155,7 +154,7 @@ plot.pixels = (2000, 2000)
 plot.colors = cell_dict
 plots.append(plot)
 
-plot = openmc.Plot.from_geometry(geometry, basis='xy')
+plot = openmc.SlicePlot.from_geometry(geometry, basis='xy')
 plot.pixels = (2000, 2000)
 plot.color_by = 'material'
 plot.colors = {1: (255, 0, 0), # UO2, red
